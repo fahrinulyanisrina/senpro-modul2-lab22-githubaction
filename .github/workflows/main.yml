@@ -14,13 +14,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      
       - name: Testing Build
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-
       - run: npm i
       - run: npm run build
 
@@ -33,7 +31,7 @@ jobs:
         node-version: [16.x]
 
     steps:
-      - name: Deploy and Build on VM
+      - name: Deploy app on VM
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -42,22 +40,22 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             eval "$(ssh-agent -s)"
-            ssh-add ~/.ssh/ ssh-praktikan2
+            ssh-add ~/.ssh/ssh-praktikan3
             echo "Cek folder project";
             [ ! -d "${HOME}/senpro/497708/modul02/senpro-modul2-lab22-githubaction" ] && 
             {
               echo "Repository belum di-clone. Cloning...";
               mkdir -p ~/senpro/497708/modul02;
-              cd ~/senpro/497708/modul02/senpro-modul2-lab22-githubaction;
+              cd ~/senpro/497708/modul02;
               git clone https://github.com/fahrinulyanisrina/senpro-modul2-lab22-githubaction.git;
-              cd ~/senpro-modul2-lab22-githubaction;
-              echo "Install package dan build project";
+              cd ~/senpro/497708/modul02/senpro-github-action;
+              echo "Install Package dan Build Project";
               npm install;
               npm run build;
             } || 
             {
               echo "Repository sudah ada. Building...";
-              cd ~/senpro/497708/modul02/senpro-modul2-lab22-githubaction;
+              cd ~/senpro/497708/modul02/senpro-github-action;
               git restore .;
               git pull origin main;
               echo "Install package dan build project";
